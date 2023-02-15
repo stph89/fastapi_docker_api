@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 
-app = FastAPI(title="FastAPI, Docker, and Traefik")
+app = FastAPI(title="Api rest en contenedor")
 
 
 @app.get("/")
