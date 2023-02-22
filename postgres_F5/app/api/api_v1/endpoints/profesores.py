@@ -21,9 +21,7 @@ def read_profesores(
         current_user: models.User = Depends(deps.get_current_active_user), #get_current_active_superuser
 ) -> Any:
     """
-    Consultar todos los profesores existentes en la tabla alumnos
-    La consulta es en forma de lista de acuerdo al esquema de este método.
-    .
+    Retrieve profesores.
     """
     profesores = crud.profesor.get_multi(db, skip=skip, limit=limit)
     return profesores
@@ -37,8 +35,7 @@ def create_profesores(
         current_profesor: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Crear un nuevo profesor---> para crear un profesor sólo es necesario
-    introducir el atributo de email, los demás atributos se pueden actualizar despues con el metodo update..
+    Create new profesor.
     """
     profesor = crud.profesor.get_by_email(db, email=profesor_in.email)
     if profesor:
@@ -67,8 +64,7 @@ def update_profesor_me(
         current_profesor: models.Profesor = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Actualización de los datos propios como profesor.
-    Para poder actualziarse como alumno se debe ser un user autenticado.
+    Update own profesor.
     """
     current_profesor_data = jsonable_encoder(current_profesor)
     profesor_in = schemas.ProfesorUpdate(**current_profesor_data)
@@ -94,7 +90,7 @@ def read_profesor_me(
         current_profesor: models.Profesor = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Consulta propia como Profesor, como usuario autenticado y actualmente activo.
+    Get current profesor.
     """
     return current_profesor
 
@@ -111,7 +107,7 @@ def create_profesor_open(
         edad: str = Body(None),
 ) -> Any:
     """
-    Creación de un nuevo Profesor sin ser usuario autenticado ni hacer log in.
+    Create new profesor without the need to be logged in.
     """
     if not settings.USERS_OPEN_REGISTRATION:
         raise HTTPException(
@@ -137,8 +133,7 @@ def read_profesor_by_id(
         db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Consultar un Profesor específico por id.
-    Sirve para consultar otros alumnos que no sea el user actual loggeado.
+    Get a specific profesor by id.
     """
     profesor = crud.profesor.get(db, id=profesor_id)
     # if profesor == current_profesor:
@@ -159,8 +154,7 @@ def update_profesor(
         current_profesor: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Actualizar un Profesor específico por id.
-    Sirve para consultar otros alumnos que no sea el user actual loggeado.
+    Update a profesor.
     """
     profesor = crud.profesor.get(db, id=profesor_id)
     if not profesor:
@@ -180,10 +174,7 @@ def delete_profesor(
         current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Eliminar un Profesor específico por id.
-    Sirve para consultar otros Profesores que no sea el user actual loggeado.
-    Falta implemenatr otorgar este permiso a un super_user o un admin para
-    evitar que cualquier ususario elimine Profesores.
+    Delete an item.
     """
     profesor = crud.profesor.get(db=db, id=id)
     if not profesor:

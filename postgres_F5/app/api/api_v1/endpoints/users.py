@@ -21,7 +21,7 @@ def read_users(
     current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
-    Seleccionar todos los users craedos.
+    Retrieve users.
     """
     users = crud.user.get_multi(db, skip=skip, limit=limit)
     return users
@@ -35,7 +35,7 @@ def create_user(
     current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
-    Crear un nuevo user.
+    Create new user.
     """
     user = crud.user.get_by_email(db, email=user_in.email)
     if user:
@@ -51,7 +51,7 @@ def create_user(
     return user
 
 
-@router.put("/Consulta_Propia", response_model=schemas.User)
+@router.put("/me", response_model=schemas.User)
 def update_user_me(
     *,
     db: Session = Depends(deps.get_db),
@@ -61,7 +61,7 @@ def update_user_me(
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Actualización propia como actual user.
+    Update own user.
     """
     current_user_data = jsonable_encoder(current_user)
     user_in = schemas.UserUpdate(**current_user_data)
@@ -81,7 +81,7 @@ def read_user_me(
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Consulta propia como actual user.
+    Get current user.
     """
     return current_user
 
@@ -95,8 +95,7 @@ def create_user_open(
     full_name: str = Body(None),
 ) -> Any:
     """
-    Creación de un nuevo user sin ser usuario autenticado ni hacer log in.
-    Esto es obligatorio para crear un nuevo usuario para la autenticación.
+    Create new user without the need to be logged in.
     """
     if not settings.USERS_OPEN_REGISTRATION:
         raise HTTPException(
@@ -121,8 +120,7 @@ def read_user_by_id(
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Consultar un user específico por id.
-    Sirve para consultar otros alumnos que no sea el user actual loggeado.
+    Get a specific user by id.
     """
     user = crud.user.get(db, id=user_id)
     if user == current_user:
@@ -143,8 +141,7 @@ def update_user(
     current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
-    Actualizar un user específico por id.
-    Sirve para consultar otros users que no sea el user actual loggeado.
+    Update a user.
     """
     user = crud.user.get(db, id=user_id)
     if not user:
@@ -154,8 +151,3 @@ def update_user(
         )
     user = crud.user.update(db, db_obj=user, obj_in=user_in)
     return user
-
-"""---> El `current_user` se obtiene, sólo si este usuario está activo.
-----> El `get_current_active_user` que a su vez utiliza `get_current_user` como dependencia, 
-devolverán un error HTTP si el usuario no existe, o si está inactivo.
-----> Sólo obtendremos un usuario si el usuario existe, fue correctamente autenticado, y está activo."""

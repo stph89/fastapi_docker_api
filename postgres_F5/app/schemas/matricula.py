@@ -2,27 +2,25 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-"""Se crea un archivo de esquema para validar el modelo de cada entidad y 
-para cada método CRUD que se va a desarrollar para cada entidad."""
 
-# Atributos compartidos
+# Shared properties
 class MatriculaBase(BaseModel):
     Alumno_id: Optional[int] = None
     Asignatura_id: Optional[int] = None
 
 
-# Atributos necesarios para la creación de un item
+# Properties to receive on ensena creation
 class MatriculaCreate(EnsenaBase):
     pass
     # title: str
 
 
-# Atributos para actualizar un item en la base de datos a través del API
+# Properties to receive on ensena update
 class MatriculaUpdate(EnsenaBase):
     pass
 
 
-# Atributos compartidos por los modelos guardados en la base de datos
+# Properties shared by models stored in DB
 class MatriculaInDBBase(EnsenaBase):
     id: int
     Alumno_id: int
@@ -32,7 +30,7 @@ class MatriculaInDBBase(EnsenaBase):
         orm_mode = True
 
 
-# Atributos adicionales para responder al cliente a través del API
+# Properties to return to client
 class Matricula(MatriculaInDBBase):
     pass
 

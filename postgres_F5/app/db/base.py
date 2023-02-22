@@ -1,8 +1,5 @@
-
-
-"""Es necesario importar todos los modelos de .models/ en este archivo Bse
-Alembic importará todos los modelops desde este archio Base,  para su creación y migración  a la base de datos."""
-
+# Import all the models, so that Base has them before being
+# imported by Alembic
 from app.db.base_class import Base  # noqa
 from app.models.item import Item  # noqa
 from app.models.user import User  # noqa

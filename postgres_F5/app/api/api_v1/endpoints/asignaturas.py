@@ -17,7 +17,7 @@ def read_asignaturas(
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Leer todas las asignaturas generadas a través del API y migraadas a la base de datos.
+    Retrieve asignaturas.
     """
     asignaturas = crud.asignatura.get_multi(db, skip=skip, limit=limit)
 
@@ -38,7 +38,7 @@ def create_asignatura(
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Crear una nueva asignatura.
+    Create new asignatura.
     """
     asignatura = crud.asignatura.create_with_owner(db=db, obj_in=asignatura_in) #, owner_id=current_user.id
     return asignatura
@@ -53,7 +53,7 @@ def update_asignatura(
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Actualizar una asignatura por ID.
+    Update an asignatura.
     """
     asignatura = crud.asignatura.get(db=db, id=id)
     if not asignatura:
@@ -72,7 +72,7 @@ def read_asignatura(
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Consultar una asignatura por ID.
+    Get asignatura by ID.
     """
     asignatura = crud.asignatura.get(db=db, id=id)
     if not asignatura:
@@ -90,7 +90,7 @@ def delete_asignatura(
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Eliminar una asignatura por ID.
+    Delete an asignatura.
     """
     asignatura = crud.asignatura.get(db=db, id=id)
     if not asignatura:

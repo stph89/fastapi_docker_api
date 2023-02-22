@@ -21,8 +21,7 @@ def read_alumnos(
         current_user: models.User = Depends(deps.get_current_active_user),#get_current_active_superuser
 ) -> Any:
     """
-    Consultar todos los alumnos existentes en la tabla alumnos
-    La consulta es en forma de lista de acuerdo al esquema de este método.
+    Retrieve alumnos.
     """
     alumnos = crud.alumno.get_multi(db, skip=skip, limit=limit)
     return alumnos
@@ -36,8 +35,7 @@ def create_alumnos(
         current_alumno: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Crear un nuevo alumno---> para crear un alumno sólo es necesario
-    introducir el atributo de email, los demás atributos se peuden actualizar despues con el metodo update.
+    Create new alumno.
     """
     alumno = crud.alumno.get_by_email(db, email=alumno_in.email)
     if alumno:
@@ -53,7 +51,7 @@ def create_alumnos(
     return alumno
 
 
-@router.put("/Creación_Propia", response_model=schemas.Alumno)
+@router.put("/me", response_model=schemas.Alumno)
 def update_alumno_me(
         *,
         db: Session = Depends(deps.get_db),
@@ -66,10 +64,9 @@ def update_alumno_me(
         current_alumno: models.Alumno = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Actualización de los datos propios como alumno.
-    Para poder actualziarse como alumno se debe ser un user autenticado.
+    Update own alumno.
     """
-    current_alumno_data = jsonable_encoder(current_alumno)  #Creación del token para alumno
+    current_alumno_data = jsonable_encoder(current_alumno)
     alumno_in = schemas.AlumnoUpdate(**current_alumno_data)
     # if password is not None:
     #     alumno_in.password = password
@@ -87,18 +84,18 @@ def update_alumno_me(
     return alumno
 
 
-@router.get("/Consulta_Propia", response_model=schemas.Alumno)
+@router.get("/me", response_model=schemas.Alumno)
 def read_alumno_me(
         db: Session = Depends(deps.get_db),
         current_alumno: models.Alumno = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Consulta propia como alumno, como usuario autenticado y actualmente activo.
+    Get current alumno.
     """
     return current_alumno
 
 
-@router.post("/Crear_sin_autenticación", response_model=schemas.Alumno)
+@router.post("/open", response_model=schemas.Alumno)
 def create_alumno_open(
         *,
         db: Session = Depends(deps.get_db),
@@ -110,7 +107,7 @@ def create_alumno_open(
         edad: str = Body(None),
 ) -> Any:
     """
-    Creación de un nuevo alumno sin ser usuario autenticado ni hacer log in.
+    Create new alumno without the need to be logged in.
     """
     if not settings.USERS_OPEN_REGISTRATION:
         raise HTTPException(
@@ -136,8 +133,7 @@ def read_alumno_by_id(
         db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Consultar un alumno específico por id.
-    Sirve para consultar otros alumnos que no sea el user actual loggeado
+    Get a specific alumno by id.
     """
     alumno = crud.alumno.get(db, id=alumno_id)
     # if alumno == current_alumno:
@@ -158,8 +154,7 @@ def update_alumno(
         current_alumno: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Actualizar un alumno específico por id.
-    Sirve para consultar otros alumnos que no sea el user actual loggeado.
+    Update a alumno.
     """
     alumno = crud.alumno.get(db, id=alumno_id)
     if not alumno:
@@ -179,10 +174,7 @@ def delete_alumno(
         current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
-    Eliminar un alumno específico por id.
-    Sirve para consultar otros alumnos que no sea el user actual loggeado.
-    Falta implemenatr otorgar este permiso a un super_user o un admin para
-    evitar que cualquier ususario elimine alumnos.
+    Delete an item.
     """
     alumno = crud.alumno.get(db=db, id=id)
     if not alumno:

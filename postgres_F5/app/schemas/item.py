@@ -2,26 +2,24 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-"""Se crea un archivo de esquema para validar el modelo de cada entidad y 
-para cada método CRUD que se va a desarrollar para cada entidad."""
 
-# Atributos compartidos
+# Shared properties
 class ItemBase(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
 
 
-# Atributos necesarios para la creación de un item
+# Properties to receive on item creation
 class ItemCreate(ItemBase):
     title: str
 
 
-# Atributos para actualizar un item en la base de datos a través del API
+# Properties to receive on item update
 class ItemUpdate(ItemBase):
     pass
 
 
-# Atributos compartidos por los modelos guardados en la base de datos
+# Properties shared by models stored in DB
 class ItemInDBBase(ItemBase):
     id: int
     title: str
@@ -31,7 +29,7 @@ class ItemInDBBase(ItemBase):
         orm_mode = True
 
 
-# Atributos adicionales para responder al cliente a través del API
+# Properties to return to client
 class Item(ItemInDBBase):
     pass
 
